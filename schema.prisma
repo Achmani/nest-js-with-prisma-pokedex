@@ -1,0 +1,50 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  userId             String    @id @default(uuid())
+  userName           String    @unique
+  userType           UserType  @relation(fields: [userTypeUserTypeId], references: [userTypeId])
+  monster            Monster[]
+  userPassword       String
+  userFirstName      String
+  userLastName       String
+  userDeleted        Boolean   @default(false)
+  userCreated        DateTime  @default(now())
+  userUpdated        DateTime  @updatedAt
+  userTypeUserTypeId String
+}
+
+model UserType {
+  userTypeId      String   @id @default(uuid())
+  userTypeName    String   @unique
+  userTypeDeleted Boolean  @default(false)
+  userTypeCreated DateTime @default(now())
+  userTypeUpdated DateTime @updatedAt
+  User            User[]
+}
+
+model Monster {
+  monsterId      String        @id @default(uuid())
+  monsterName    String        @unique
+  monsterType    MonsterType[]
+  monsterDeleted Boolean       @default(false)
+  monsterCreated DateTime      @default(now())
+  monsterUpdated DateTime      @updatedAt
+  User           User[]
+}
+
+model MonsterType {
+  monsterTypeId         String    @id @default(uuid())
+  monsterTypeName       String    @unique
+  monster               Monster[]
+  monsterTypeDeleted    Boolean   @default(false)
+  monsterTypeCreated_at DateTime  @default(now())
+  monsterTypeUpdated_at DateTime  @updatedAt
+}
